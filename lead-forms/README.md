@@ -122,9 +122,7 @@ New → Contacted → Qualified → Negotiating → Converted → Lost
 
 ## Viewing Submissions
 
-Go to [Lead Forms](https://app.dunefox.io/console/forms) → select your form → click **Responses** tab.
-
-Export as CSV is available from the Responses view.
+Go to [Lead Forms](https://app.dunefox.io/console/forms) → select your form → click **Responses** tab to view all submissions in a table.
 
 ---
 
