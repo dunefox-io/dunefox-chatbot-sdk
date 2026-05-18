@@ -208,23 +208,31 @@ DunefoxChat.init({
 
 Dunefox lead forms capture submissions directly into your CRM pipeline — **no limit on forms or submissions**, forever free.
 
-### Embed via iFrame
+### Embed via SDK Script (Recommended)
+
+Auto-resizes, no iframe borders, works everywhere:
+
+```html
+<div data-form-id="YOUR_FORM_ID"></div>
+<script
+  src="https://app.dunefox.io/api/sdk/form.js"
+  data-form-id="YOUR_FORM_ID"
+></script>
+```
+
+### Embed via iFrame (Advanced)
+
+For strict CSP environments or manual height control:
 
 ```html
 <iframe
-  src="https://app.dunefox.io/f/YOUR_FORM_ID"
+  id="df-form-YOUR_FORM_ID"
+  src="https://app.dunefox.io/f/YOUR_FORM_ID?embed=1"
   width="100%"
   height="600"
   frameborder="0"
-  style="border: none; border-radius: 12px;">
+  style="border:none;border-radius:12px;">
 </iframe>
-```
-
-### Embed via SDK Script
-
-```html
-<div data-dunefox-form="YOUR_FORM_ID"></div>
-<script src="https://app.dunefox.io/api/sdk/forms.js"></script>
 ```
 
 ### Supported Field Types

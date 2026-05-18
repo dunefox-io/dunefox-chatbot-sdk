@@ -23,44 +23,35 @@
 
 ---
 
-## Embed via iFrame (Simplest)
+### Embed via SDK Script (Recommended)
 
-Works on any website — Webflow, Shopify, Squarespace, WordPress, plain HTML:
-
-```html
-<iframe
-  src="https://app.dunefox.io/f/YOUR_FORM_ID"
-  width="100%"
-  height="600"
-  frameborder="0"
-  style="border: none; border-radius: 12px;">
-</iframe>
-```
-
-**Responsive iFrame (auto-height):**
+Auto-resizes, no iframe borders, works everywhere:
 
 ```html
-<iframe
-  src="https://app.dunefox.io/f/YOUR_FORM_ID"
-  width="100%"
-  height="600"
-  frameborder="0"
-  style="border: none; width: 100%; max-width: 520px; display: block; margin: 0 auto;">
-</iframe>
+<div data-form-id="YOUR_FORM_ID"></div>
+<script
+  src="https://app.dunefox.io/api/sdk/form.js"
+  data-form-id="YOUR_FORM_ID"
+></script>
 ```
+
+Paste this exactly where you want the form to appear. The SDK auto-renders into the `div`.
 
 ---
 
-## Embed via SDK Script
+## Embed via iFrame (Advanced)
 
-For more control over placement and styling:
+For strict CSP environments or when you need manual height control:
 
 ```html
-<!-- Add the container where you want the form -->
-<div data-dunefox-form="YOUR_FORM_ID"></div>
-
-<!-- Load the SDK (once per page, before </body>) -->
-<script src="https://app.dunefox.io/api/sdk/forms.js"></script>
+<iframe
+  id="df-form-YOUR_FORM_ID"
+  src="https://app.dunefox.io/f/YOUR_FORM_ID?embed=1"
+  width="100%"
+  height="600"
+  frameborder="0"
+  style="border:none;border-radius:12px;">
+</iframe>
 ```
 
 ---
