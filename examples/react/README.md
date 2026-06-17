@@ -93,9 +93,58 @@ export default App;
 
 ---
 
+## 🌐 Multiple Webbots — Multi-Site Support
+
+If you deploy the same React codebase to multiple domains, or maintain separate React apps per site, you can link each embed to its own webbot config. All conversations land in a single Dunefox inbox, each tagged with a domain pill so agents know which site the message came from.
+
+### How to set up
+
+1. Go to **Console → Services → Web AI Agent** and click **"Add New Web AI Agent"** for each site.
+2. Copy the **Config ID** from each webbot's **Deploy / Edit** page.
+3. Pass `configId` as a prop.
+
+### Example
+
+```tsx
+<DunefoxChatbot
+  tenantId="YOUR_TENANT_ID"
+  configId="CONFIG_ID_FOR_THIS_SITE"  // from Console → Web AI Agent → Deploy
+  position="bottom-right"
+/>
+```
+
+You can also drive `configId` from a Vite environment variable so each deployment automatically uses the right config:
+
+```tsx
+<DunefoxChatbot
+  tenantId={import.meta.env.VITE_DUNEFOX_TENANT_ID}
+  configId={import.meta.env.VITE_DUNEFOX_CONFIG_ID}  // optional
+/>
+```
+
+```env
+# .env
+VITE_DUNEFOX_TENANT_ID=your_tenant_id
+VITE_DUNEFOX_CONFIG_ID=config_id_for_this_site
+```
+
+> **`configId` is optional.** Single-site setups work exactly as before with no changes needed.
+
+### Plan limits
+
+| Plan | Webbots allowed |
+|------|----------------|
+| Free | 3 |
+| Fox | 3 |
+| Fox Pro | 5 |
+| Fox Max | 10 |
+
+---
+
 ## Links
 
 - 🌐 [Dunefox Dashboard](https://app.dunefox.io)
+- 🤖 [Web AI Agent — Console](https://app.dunefox.io/console/services/webbot)
 - 🚀 [Deploy & Get Tenant ID](https://app.dunefox.io/console/deploy)
 - 📦 [npm package](https://www.npmjs.com/package/dunefox-chatbot)
 - 🏠 [dunefox.io](https://dunefox.io)

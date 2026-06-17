@@ -79,9 +79,61 @@ Use the [WPCode plugin](https://wpcode.com/) (free):
 
 ---
 
+## 🌐 Multiple Webbots — Embed on Multiple Sites
+
+If you manage more than one website, you can deploy a **separate webbot per domain** — all conversations land in a single unified inbox, each tagged with which site it came from.
+
+### How to set up
+
+1. Go to **Console → Services → Web AI Agent** and click **"Add New Web AI Agent"** for each site.
+2. Copy the **Config ID** from each webbot's **Deploy / Edit** page.
+3. Pass `configId` in each site's embed snippet.
+
+### Example — two sites
+
+**Main site (`yourdomain.com`):**
+
+```html
+<script src="https://app.dunefox.io/api/sdk/chatbot.js"></script>
+<script>
+  DunefoxChat.init({
+    tenantId: 'YOUR_TENANT_ID',
+    configId: 'CONFIG_ID_FOR_MAIN_SITE',  // from Console → Web AI Agent → Deploy
+  });
+</script>
+```
+
+**Help centre (`help.yourdomain.com`):**
+
+```html
+<script src="https://app.dunefox.io/api/sdk/chatbot.js"></script>
+<script>
+  DunefoxChat.init({
+    tenantId: 'YOUR_TENANT_ID',
+    configId: 'CONFIG_ID_FOR_HELP_SITE',  // different config, same inbox
+  });
+</script>
+```
+
+In your Dunefox Inbox, each conversation from the help centre will show a `help.yourdomain.com` domain pill so agents immediately know the source.
+
+> **`configId` is optional.** Omitting it still works — existing single-site embeds are completely unaffected.
+
+### Plan limits
+
+| Plan | Webbots allowed |
+|------|----------------|
+| Free | 3 |
+| Fox | 3 |
+| Fox Pro | 5 |
+| Fox Max | 10 |
+
+---
+
 ## Links
 
 - 🌐 [Dunefox Dashboard](https://app.dunefox.io)
+- 🤖 [Web AI Agent — Console](https://app.dunefox.io/console/services/webbot)
 - 🚀 [Deploy & Get Tenant ID](https://app.dunefox.io/console/deploy)
 - 🏠 [dunefox.io](https://dunefox.io)
 

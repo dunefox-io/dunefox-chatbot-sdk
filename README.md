@@ -13,6 +13,7 @@
 ## ✨ Features
 
 - 🤖 **AI-powered web chatbot** — deploy a fully functional chatbot widget in under 2 minutes
+- 🌐 **Multi-site support** — run separate webbots for different domains, all feeding one inbox with per-site source labels
 - 📋 **Unlimited free lead forms** — capture leads directly into your CRM, forever free
 - 💬 **WhatsApp Business integration** — two-way messaging, templates & bulk campaigns
 - 📣 **Omnichannel inbox** — WhatsApp, Telegram, Web Chatbot, Facebook Messenger, Instagram
@@ -38,7 +39,7 @@ npm install dunefox-chatbot
 
 Sign up free at [app.dunefox.io](https://app.dunefox.io) → Go to **Deploy** → Copy your **Tenant ID**.
 
-> No credit card required. Free plan includes 1 chatbot + unlimited lead forms.
+> No credit card required. Free plan includes up to 3 webbots + unlimited lead forms.
 
 ### 3. Embed (pick your framework below)
 
@@ -179,12 +180,110 @@ add_action('wp_footer', function() {
 
 ---
 
-## 🎛️ Chatbot Widget Customization
+## 🌐 Multiple Webbots (Multi-Site) — `v1.0.9+`
+
+You can deploy **separate webbots per domain or site** (e.g. main site, blog, help centre) — all conversations flow into a single unified inbox. Each conversation is tagged with a **source domain pill** so your agents always know which site the message came from.
+
+### How it works
+
+1. Go to **Console → Services → Web AI Agent** and click **"Add New Web AI Agent"** for each site.
+2. Each webbot gets its own **Config ID** — visible in the **Deploy / Edit** page of that webbot.
+3. Pass that `configId` when you call `init()`. Conversations in your inbox are automatically labelled with the source domain (e.g. `help.yourdomain.com`).
+
+### Plan limits
+
+| Plan | Webbots allowed |
+|------|----------------|
+| Free | 3 |
+| Fox | 3 |
+| Fox Pro | 5 |
+| Fox Max | 10 |
+
+> When you reach your plan limit, the Console shows an upgrade banner and the API returns HTTP 429 `WEBBOT_LIMIT_REACHED`.
+
+### Example — two sites, one inbox
+
+**Main marketing site (`yourdomain.com`):**
+```html
+<script src="https://app.dunefox.io/api/sdk/chatbot.js"></script>
+<script>
+  DunefoxChat.init({
+    tenantId: 'YOUR_TENANT_ID',
+    configId: 'CONFIG_ID_FOR_MAIN_SITE',  // from Console → Web AI Agent → Deploy
+  });
+</script>
+```
+
+**Help centre (`help.yourdomain.com`):**
+```html
+<script src="https://app.dunefox.io/api/sdk/chatbot.js"></script>
+<script>
+  DunefoxChat.init({
+    tenantId: 'YOUR_TENANT_ID',
+    configId: 'CONFIG_ID_FOR_HELP_SITE',  // different config, same inbox
+  });
+</script>
+```
+
+**React / Next.js:**
+```tsx
+<DunefoxChatbot
+  tenantId="YOUR_TENANT_ID"
+  configId="CONFIG_ID_FOR_THIS_SITE"
+/>
+```
+
+> **Note:** `configId` is **optional**. Omitting it works exactly as before — conversations appear in the inbox without a source label and `webbotConfigId` is stored as `null`.
+
+---
+
+## 🎛️ Full API Reference — `init(options)`
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `tenantId` | `string` | **required** | Your Dunefox tenant ID. Found in **Console → Settings → Install Widget**. |
+| `configId` | `string` | `undefined` | Webbot Config ID — links conversations to a specific site/webbot in the inbox. Required for multi-webbot setups. Found in **Console → Web AI Agent → Deploy**. |
+| `position` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Widget anchor corner. |
+| `offsetX` | `number` | `0` | Extra horizontal inset from the anchor edge (px). |
+| `offsetY` | `number` | `0` | Extra vertical inset from the anchor corner (px). |
+| `defaultOpen` | `boolean` | `false` | Open the chat panel automatically on page load. |
+| `hideBranding` | `boolean` | `false` | Remove "Powered by Dunefox" badge. Available on paid plans. |
+| `iconUrl` | `string` | Dunefox default | Custom toggle button icon URL. |
+| `baseUrl` | `string` | `https://app.dunefox.io` | Override for staging or self-hosted deployments. |
+
+### `open()` / `close()`
+
+Programmatically show or hide the chat panel:
+
+```js
+DunefoxChat.open();
+DunefoxChat.close();
+```
+
+Useful for triggering the chatbot from your own CTA button:
+
+```js
+document.getElementById('my-help-btn').addEventListener('click', () => {
+  DunefoxChat.open();
+});
+```
+
+### `destroy()`
+
+Completely remove the widget and clean up all listeners:
+
+```js
+DunefoxChat.destroy();
+```
+
+---
+
+## 🎛️ Widget Customization
 
 Position the chatbot widget anywhere on the page and fine-tune the offset:
 
 | Option | Type | Values | Default |
-|--------|------|--------|---------|
+|--------|------|--------|---------| 
 | `position` | `string` | `bottom-right` · `bottom-left` · `top-right` · `top-left` | `bottom-right` |
 | `offsetX` | `number` | `0–120` (px inward from edge) | `0` |
 | `offsetY` | `number` | `0–120` (px inward from edge) | `0` |
@@ -201,6 +300,17 @@ DunefoxChat.init({
 ```
 
 > 💡 Use the visual position picker inside your [Dunefox Deploy dashboard](https://app.dunefox.io/console/deploy) to preview placement before grabbing the code.
+
+---
+
+## ✅ Backwards Compatibility
+
+| Scenario | Behaviour |
+|----------|-----------|
+| Existing embed with no `configId` | Works unchanged — conversation stored with `webbotConfigId: null` |
+| Single webbot per account | Works unchanged — console shows one card |
+| Inbox with old conversations | No source pill shown (field is null) |
+| Plan at limit, tries to add webbot | UI shows upgrade banner; API returns HTTP 429 |
 
 ---
 
@@ -314,6 +424,7 @@ New → Contacted → Qualified → Negotiating → Converted → Lost
 | 🌐 **Dashboard** | [app.dunefox.io](https://app.dunefox.io) |
 | 🏠 **Website** | [dunefox.io](https://dunefox.io) |
 | 📦 **npm package** | [npmjs.com/package/dunefox-chatbot](https://www.npmjs.com/package/dunefox-chatbot) |
+| 🤖 **Web AI Agent** | [app.dunefox.io/console/services/webbot](https://app.dunefox.io/console/services/webbot) |
 | 💬 **WhatsApp Setup** | [app.dunefox.io/console/services/whatsapp](https://app.dunefox.io/console/services/whatsapp) |
 | 📋 **Lead Forms** | [app.dunefox.io/console/forms](https://app.dunefox.io/console/forms) |
 | 🚀 **Deploy Chatbot** | [app.dunefox.io/console/deploy](https://app.dunefox.io/console/deploy) |
@@ -337,5 +448,5 @@ Open an issue or pull request — contributions are welcome!
 ---
 
 <p align="center">
-  Built by <a href="https://dunefox.io">Dunefox</a> — Free AI Chatbot & Lead Generation Platform
+  Built by <a href="https://dunefox.io">Dunefox</a> — Free AI Chatbot &amp; Lead Generation Platform
 </p>
